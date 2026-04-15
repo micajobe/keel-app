@@ -413,8 +413,8 @@ export default function Home() {
               className="flex flex-col flex-1 items-center justify-center px-6 gap-10"
             >
               <div className="flex flex-col items-center gap-2 text-center">
-                <h1 className="text-4xl font-semibold tracking-tight">Keel</h1>
-                <p className="text-base text-muted-foreground">{today}</p>
+                <h1 className="text-6xl font-normal tracking-tight">Keel</h1>
+                <p className="text-lg text-muted-foreground">{today}</p>
               </div>
 
               {error && (
