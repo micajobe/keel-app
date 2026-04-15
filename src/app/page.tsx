@@ -427,7 +427,7 @@ export default function Home() {
                 )}
                 <button
                   onClick={() => setView("mode")}
-                  className="px-8 py-3 rounded-full bg-foreground text-background text-base font-medium hover:opacity-80 transition-opacity"
+                  className="px-10 py-4 rounded-full bg-foreground text-background text-xl font-medium hover:opacity-80 transition-opacity"
                 >
                   Start your day
                 </button>
@@ -465,14 +465,14 @@ export default function Home() {
               <div>
                 <button
                   onClick={() => setView("home")}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+                  className="text-base text-muted-foreground hover:text-foreground transition-colors mb-6"
                 >
                   ← back
                 </button>
-                <h2 className="text-2xl font-semibold tracking-tight">
+                <h2 className="text-3xl font-semibold tracking-tight">
                   What kind of day is it?
                 </h2>
-                <p className="text-base text-muted-foreground mt-1">
+                <p className="text-xl text-muted-foreground mt-1">
                   Keel will shape your view around your answer.
                 </p>
               </div>
@@ -483,10 +483,10 @@ export default function Home() {
                     key={m.key}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => startSession(m.key)}
-                    className="flex flex-col items-start gap-1 px-5 py-4 rounded-xl border border-border bg-card text-left hover:border-foreground/30 hover:bg-accent transition-all"
+                    className="flex flex-col items-start gap-1 px-5 py-5 rounded-xl border border-border bg-card text-left hover:border-foreground/30 hover:bg-accent transition-all"
                   >
-                    <span className="text-base font-medium">{m.label}</span>
-                    <span className="text-sm text-muted-foreground">{m.sub}</span>
+                    <span className="text-xl font-medium">{m.label}</span>
+                    <span className="text-base text-muted-foreground">{m.sub}</span>
                   </motion.button>
                 ))}
               </div>
@@ -510,7 +510,7 @@ export default function Home() {
                   />
                 ))}
               </div>
-              <p className="text-sm text-muted-foreground">{loadingText}</p>
+              <p className="text-lg text-muted-foreground">{loadingText}</p>
             </motion.div>
           )}
 
@@ -527,14 +527,14 @@ export default function Home() {
                 </p>
                 <button
                   onClick={() => setView("home")}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
                   new session
                 </button>
               </div>
 
               {briefing && (
-                <p className="text-base text-foreground/70 leading-relaxed">{briefing}</p>
+                <p className="text-xl text-foreground/70 leading-relaxed">{briefing}</p>
               )}
 
               <div className="flex flex-col gap-6">
@@ -578,7 +578,7 @@ export default function Home() {
                             {task.title}
                           </span>
                           {!task.completed && task.reasoning && (
-                            <span className="text-sm text-muted-foreground">
+                            <span className="text-base text-muted-foreground">
                               {task.reasoning}
                             </span>
                           )}
@@ -589,7 +589,7 @@ export default function Home() {
                 </AnimatePresence>
 
                 {activeTasks.length === 0 && (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-lg text-muted-foreground">
                     No initiatives in your list. Add tasks to your Initiatives list in Teamwork.
                   </p>
                 )}
@@ -624,7 +624,7 @@ export default function Home() {
                 </p>
                 <button
                   onClick={() => setView("home")}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
                   new session
                 </button>
@@ -636,7 +636,7 @@ export default function Home() {
                   <button
                     key={s}
                     onClick={() => setGtdSort(s)}
-                    className={`px-3 py-1.5 rounded-full text-sm transition-all ${
+                    className={`px-4 py-2 rounded-full text-base transition-all ${
                       gtdSort === s
                         ? "bg-foreground text-background"
                         : "text-muted-foreground hover:text-foreground"
@@ -664,7 +664,7 @@ export default function Home() {
                 </AnimatePresence>
 
                 {sortedGTD.length === 0 && (
-                  <p className="text-sm text-muted-foreground py-4">
+                  <p className="text-lg text-muted-foreground py-4">
                     No open tasks. Add some to your Keel project in Teamwork.
                   </p>
                 )}
@@ -696,18 +696,18 @@ export default function Home() {
               <div className="flex items-start justify-between">
                 <div className="flex flex-col gap-0.5">
                   <p className="text-xs text-muted-foreground uppercase tracking-widest">Reflect</p>
-                  <p className="text-base text-muted-foreground">{reflectData.weekLabel}</p>
+                  <p className="text-xl text-muted-foreground">{reflectData.weekLabel}</p>
                 </div>
                 <button
                   onClick={() => setView("home")}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
                   ← home
                 </button>
               </div>
 
               {reflectData.synthesis && (
-                <p className="text-base text-foreground/80 leading-relaxed">{reflectData.synthesis}</p>
+                <p className="text-xl text-foreground/80 leading-relaxed">{reflectData.synthesis}</p>
               )}
 
               <Separator />
@@ -773,11 +773,11 @@ export default function Home() {
               <div className="flex items-start justify-between">
                 <div className="flex flex-col gap-0.5">
                   <p className="text-xs text-muted-foreground uppercase tracking-widest">Capture</p>
-                  <p className="text-base text-muted-foreground">What&apos;s on your plate?</p>
+                  <p className="text-xl text-muted-foreground">What&apos;s on your plate?</p>
                 </div>
                 <button
                   onClick={() => setView("home")}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
                   ← home
                 </button>
@@ -852,11 +852,11 @@ export default function Home() {
               <div className="flex items-start justify-between">
                 <div className="flex flex-col gap-0.5">
                   <p className="text-xs text-muted-foreground uppercase tracking-widest">Strategy</p>
-                  <p className="text-base text-muted-foreground">{new Date().getFullYear()} must-wins</p>
+                  <p className="text-xl text-muted-foreground">{new Date().getFullYear()} must-wins</p>
                 </div>
                 <button
                   onClick={() => setView("home")}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
                   ← home
                 </button>
@@ -1078,7 +1078,7 @@ function GTDTaskItem({
       </button>
 
       <span
-        className={`text-base leading-snug flex-1 min-w-0 ${
+        className={`text-lg leading-snug flex-1 min-w-0 ${
           task.completed ? "line-through text-muted-foreground" : "text-foreground"
         }`}
       >
@@ -1087,7 +1087,7 @@ function GTDTaskItem({
 
       {dueLabel && !task.completed && (
         <span
-          className={`text-sm flex-shrink-0 ${
+          className={`text-base flex-shrink-0 ${
             isOverdue ? "text-destructive" : "text-muted-foreground"
           }`}
         >
@@ -1122,8 +1122,8 @@ function ParkedItem({ task }: { task: Task }) {
 
   return (
     <div className="flex flex-col gap-0.5 py-2.5 border-l-2 border-amber-300/50 pl-3">
-      <span className="text-sm font-medium text-muted-foreground">{task.title}</span>
-      <span className="text-sm text-amber-600/60">{label}</span>
+      <span className="text-base font-medium text-muted-foreground">{task.title}</span>
+      <span className="text-base text-amber-600/60">{label}</span>
     </div>
   );
 }
@@ -1139,10 +1139,10 @@ function FlagItem({ flag }: { flag: Flag }) {
 
   return (
     <div className="flex flex-col gap-0.5 py-2.5 border-l-2 border-border pl-3">
-      <span className={`text-sm font-medium ${colors[flag.flag_type] ?? "text-muted-foreground"}`}>
+      <span className={`text-base font-medium ${colors[flag.flag_type] ?? "text-muted-foreground"}`}>
         {flag.title}
       </span>
-      <span className="text-sm text-muted-foreground">{flag.note}</span>
+      <span className="text-base text-muted-foreground">{flag.note}</span>
     </div>
   );
 }
@@ -1178,14 +1178,14 @@ function InitiativeSheet({
               <h2 className="text-3xl font-light leading-snug flex-1">{initiative.title}</h2>
               <button
                 onClick={() => onOpenChange(false)}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors flex-shrink-0 mt-1"
+                className="text-base text-muted-foreground hover:text-foreground transition-colors flex-shrink-0 mt-1"
               >
                 ← back
               </button>
             </div>
 
             {initiative.reasoning && (
-              <p className="text-base text-muted-foreground leading-relaxed">{initiative.reasoning}</p>
+              <p className="text-lg text-muted-foreground leading-relaxed">{initiative.reasoning}</p>
             )}
 
             <Separator />
@@ -1228,7 +1228,7 @@ function InitiativeSheet({
                     }`}
                   />
                   <span
-                    className={`text-base leading-snug ${
+                    className={`text-lg leading-snug ${
                       subtask.completed
                         ? "line-through text-muted-foreground"
                         : "text-foreground"
@@ -1246,7 +1246,7 @@ function InitiativeSheet({
                   onComplete(initiative);
                   onOpenChange(false);
                 }}
-                className="self-start px-6 py-3 rounded-full bg-foreground text-background text-base font-medium hover:opacity-80 transition-opacity"
+                className="self-start px-8 py-4 rounded-full bg-foreground text-background text-lg font-medium hover:opacity-80 transition-opacity"
               >
                 Mark complete
               </button>
