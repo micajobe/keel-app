@@ -413,8 +413,8 @@ export default function Home() {
               className="flex flex-col flex-1 items-center justify-center px-6 gap-10"
             >
               <div className="flex flex-col items-center gap-2 text-center">
-                <h1 className="text-3xl font-semibold tracking-tight">Keel</h1>
-                <p className="text-sm text-muted-foreground">{today}</p>
+                <h1 className="text-4xl font-semibold tracking-tight">Keel</h1>
+                <p className="text-base text-muted-foreground">{today}</p>
               </div>
 
               {error && (
@@ -423,30 +423,30 @@ export default function Home() {
 
               <div className="flex flex-col items-center gap-4">
                 {deltaNudge && (
-                  <p className="text-xs text-amber-600/80 text-center">{deltaNudge}</p>
+                  <p className="text-sm text-amber-600/80 text-center">{deltaNudge}</p>
                 )}
                 <button
                   onClick={() => setView("mode")}
-                  className="px-8 py-3 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-80 transition-opacity"
+                  className="px-8 py-3 rounded-full bg-foreground text-background text-base font-medium hover:opacity-80 transition-opacity"
                 >
                   Start your day
                 </button>
                 <div className="flex flex-col items-center gap-2">
                   <button
                     onClick={openCapture}
-                    className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     Capture tasks →
                   </button>
                   <button
                     onClick={loadReflect}
-                    className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     Reflect on this week →
                   </button>
                   <button
                     onClick={loadSettings}
-                    className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     Set your must-wins →
                   </button>
@@ -465,14 +465,14 @@ export default function Home() {
               <div>
                 <button
                   onClick={() => setView("home")}
-                  className="text-xs text-muted-foreground hover:text-foreground transition-colors mb-6"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
                 >
                   ← back
                 </button>
-                <h2 className="text-xl font-semibold tracking-tight">
+                <h2 className="text-2xl font-semibold tracking-tight">
                   What kind of day is it?
                 </h2>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-base text-muted-foreground mt-1">
                   Keel will shape your view around your answer.
                 </p>
               </div>
@@ -485,8 +485,8 @@ export default function Home() {
                     onClick={() => startSession(m.key)}
                     className="flex flex-col items-start gap-1 px-5 py-4 rounded-xl border border-border bg-card text-left hover:border-foreground/30 hover:bg-accent transition-all"
                   >
-                    <span className="text-sm font-medium">{m.label}</span>
-                    <span className="text-xs text-muted-foreground">{m.sub}</span>
+                    <span className="text-base font-medium">{m.label}</span>
+                    <span className="text-sm text-muted-foreground">{m.sub}</span>
                   </motion.button>
                 ))}
               </div>
@@ -527,14 +527,14 @@ export default function Home() {
                 </p>
                 <button
                   onClick={() => setView("home")}
-                  className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   new session
                 </button>
               </div>
 
               {briefing && (
-                <p className="text-sm text-foreground/70 leading-relaxed">{briefing}</p>
+                <p className="text-base text-foreground/70 leading-relaxed">{briefing}</p>
               )}
 
               <div className="flex flex-col gap-6">
@@ -569,7 +569,7 @@ export default function Home() {
                         </button>
                         <div className="flex flex-col gap-1">
                           <span
-                            className={`text-xl font-light leading-snug transition-all ${
+                            className={`text-2xl font-light leading-snug transition-all ${
                               task.completed
                                 ? "line-through text-muted-foreground"
                                 : "text-foreground group-hover:text-foreground/80"
@@ -578,7 +578,7 @@ export default function Home() {
                             {task.title}
                           </span>
                           {!task.completed && task.reasoning && (
-                            <span className="text-xs text-muted-foreground">
+                            <span className="text-sm text-muted-foreground">
                               {task.reasoning}
                             </span>
                           )}
@@ -624,7 +624,7 @@ export default function Home() {
                 </p>
                 <button
                   onClick={() => setView("home")}
-                  className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   new session
                 </button>
@@ -636,7 +636,7 @@ export default function Home() {
                   <button
                     key={s}
                     onClick={() => setGtdSort(s)}
-                    className={`px-3 py-1.5 rounded-full text-xs transition-all ${
+                    className={`px-3 py-1.5 rounded-full text-sm transition-all ${
                       gtdSort === s
                         ? "bg-foreground text-background"
                         : "text-muted-foreground hover:text-foreground"
@@ -696,18 +696,18 @@ export default function Home() {
               <div className="flex items-start justify-between">
                 <div className="flex flex-col gap-0.5">
                   <p className="text-xs text-muted-foreground uppercase tracking-widest">Reflect</p>
-                  <p className="text-sm text-muted-foreground">{reflectData.weekLabel}</p>
+                  <p className="text-base text-muted-foreground">{reflectData.weekLabel}</p>
                 </div>
                 <button
                   onClick={() => setView("home")}
-                  className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   ← home
                 </button>
               </div>
 
               {reflectData.synthesis && (
-                <p className="text-sm text-foreground/80 leading-relaxed">{reflectData.synthesis}</p>
+                <p className="text-base text-foreground/80 leading-relaxed">{reflectData.synthesis}</p>
               )}
 
               <Separator />
@@ -717,11 +717,11 @@ export default function Home() {
                   <p className="text-xs text-muted-foreground uppercase tracking-widest">
                     Completed this week
                   </p>
-                  <span className="text-xs text-muted-foreground">{reflectData.totalCompleted}</span>
+                  <span className="text-sm text-muted-foreground">{reflectData.totalCompleted}</span>
                 </div>
 
                 {reflectData.totalCompleted === 0 ? (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-base text-muted-foreground">
                     Nothing logged yet — complete tasks during a session and they&apos;ll appear here.
                   </p>
                 ) : (
@@ -733,7 +733,7 @@ export default function Home() {
                         </p>
                         <div className="flex flex-col gap-1.5">
                           {group.tasks.map((title, i) => (
-                            <p key={i} className="text-sm text-foreground/80 leading-snug">{title}</p>
+                            <p key={i} className="text-base text-foreground/80 leading-snug">{title}</p>
                           ))}
                         </div>
                       </div>
@@ -751,9 +751,9 @@ export default function Home() {
                     </p>
                     {reflectData.stillBlocked.map((b, i) => (
                       <div key={i} className="flex flex-col gap-0.5 pl-3 border-l-2 border-amber-300/50">
-                        <p className="text-xs font-medium text-muted-foreground">{b.reason}</p>
+                        <p className="text-sm font-medium text-muted-foreground">{b.reason}</p>
                         {b.waiting_on && (
-                          <p className="text-xs text-amber-600/60">Waiting on {b.waiting_on}</p>
+                          <p className="text-sm text-amber-600/60">Waiting on {b.waiting_on}</p>
                         )}
                       </div>
                     ))}
@@ -773,11 +773,11 @@ export default function Home() {
               <div className="flex items-start justify-between">
                 <div className="flex flex-col gap-0.5">
                   <p className="text-xs text-muted-foreground uppercase tracking-widest">Capture</p>
-                  <p className="text-sm text-muted-foreground">What&apos;s on your plate?</p>
+                  <p className="text-base text-muted-foreground">What&apos;s on your plate?</p>
                 </div>
                 <button
                   onClick={() => setView("home")}
-                  className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   ← home
                 </button>
@@ -796,12 +796,12 @@ export default function Home() {
                   placeholder="Type a task and press Enter…"
                   rows={3}
                   autoFocus
-                  className="w-full px-3 py-3 rounded-lg border border-border bg-transparent text-sm leading-relaxed focus:outline-none focus:border-foreground/50 transition-colors resize-none"
+                  className="w-full px-3 py-3 rounded-lg border border-border bg-transparent text-base leading-relaxed focus:outline-none focus:border-foreground/50 transition-colors resize-none"
                 />
                 <button
                   onClick={captureTask}
                   disabled={!captureInput.trim() || captureLoading}
-                  className="self-end px-5 py-2.5 rounded-full bg-foreground text-background text-sm font-medium disabled:opacity-30 hover:opacity-80 transition-opacity"
+                  className="self-end px-5 py-2.5 rounded-full bg-foreground text-background text-base font-medium disabled:opacity-30 hover:opacity-80 transition-opacity"
                 >
                   {captureLoading ? "Adding…" : "Add to inbox"}
                 </button>
@@ -823,7 +823,7 @@ export default function Home() {
                           className="flex items-start gap-3 py-2.5"
                         >
                           <span className="mt-0.5 w-1.5 h-1.5 rounded-full bg-foreground/30 flex-shrink-0" />
-                          <span className="text-sm text-muted-foreground leading-snug">{t.content}</span>
+                          <span className="text-base text-muted-foreground leading-snug">{t.content}</span>
                         </motion.div>
                       ))}
                     </AnimatePresence>
@@ -834,7 +834,7 @@ export default function Home() {
               {capturedTasks.length > 0 && (
                 <button
                   onClick={() => setView("mode")}
-                  className="self-start px-6 py-3 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-80 transition-opacity"
+                  className="self-start px-6 py-3 rounded-full bg-foreground text-background text-base font-medium hover:opacity-80 transition-opacity"
                 >
                   Start your day →
                 </button>
@@ -852,11 +852,11 @@ export default function Home() {
               <div className="flex items-start justify-between">
                 <div className="flex flex-col gap-0.5">
                   <p className="text-xs text-muted-foreground uppercase tracking-widest">Strategy</p>
-                  <p className="text-sm text-muted-foreground">{new Date().getFullYear()} must-wins</p>
+                  <p className="text-base text-muted-foreground">{new Date().getFullYear()} must-wins</p>
                 </div>
                 <button
                   onClick={() => setView("home")}
-                  className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   ← home
                 </button>
@@ -866,7 +866,7 @@ export default function Home() {
                 <p className="text-xs text-muted-foreground uppercase tracking-widest">Must-Wins</p>
 
                 {settingsTiers.filter((t) => t.tier_type === "annual").length === 0 && (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-base text-muted-foreground">
                     No must-wins set yet. Add 3–5 long-term goals that define this year for you.
                   </p>
                 )}
@@ -879,7 +879,7 @@ export default function Home() {
                         key={tier.id}
                         className="flex items-center justify-between gap-3 py-2.5 border-b border-border/50"
                       >
-                        <span className="text-sm text-foreground leading-snug flex-1">{tier.name}</span>
+                        <span className="text-base text-foreground leading-snug flex-1">{tier.name}</span>
                         <button
                           onClick={() => removeRock(tier.id)}
                           className="text-xs text-muted-foreground/40 hover:text-destructive transition-colors flex-shrink-0"
@@ -898,12 +898,12 @@ export default function Home() {
                     onChange={(e) => setNewRockName(e.target.value)}
                     onKeyDown={(e) => { if (e.key === "Enter") addRock(); }}
                     placeholder="Add a long-term goal…"
-                    className="flex-1 px-3 py-2.5 rounded-lg border border-border bg-transparent text-sm focus:outline-none focus:border-foreground/50 transition-colors"
+                    className="flex-1 px-3 py-2.5 rounded-lg border border-border bg-transparent text-base focus:outline-none focus:border-foreground/50 transition-colors"
                   />
                   <button
                     onClick={addRock}
                     disabled={!newRockName.trim()}
-                    className="px-4 py-2.5 rounded-lg bg-foreground text-background text-sm font-medium disabled:opacity-30 hover:opacity-80 transition-opacity"
+                    className="px-4 py-2.5 rounded-lg bg-foreground text-background text-base font-medium disabled:opacity-30 hover:opacity-80 transition-opacity"
                   >
                     Add
                   </button>
@@ -926,12 +926,12 @@ export default function Home() {
                       }}
                       autoFocus
                       placeholder="e.g. $30M digital revenue by 2030"
-                      className="flex-1 px-3 py-2.5 rounded-lg border border-border bg-transparent text-sm focus:outline-none focus:border-foreground/50 transition-colors"
+                      className="flex-1 px-3 py-2.5 rounded-lg border border-border bg-transparent text-base focus:outline-none focus:border-foreground/50 transition-colors"
                     />
                     <button
                       onClick={saveVision}
                       disabled={!visionDraft.trim()}
-                      className="px-4 py-2.5 rounded-lg bg-foreground text-background text-sm font-medium disabled:opacity-30 hover:opacity-80 transition-opacity"
+                      className="px-4 py-2.5 rounded-lg bg-foreground text-background text-base font-medium disabled:opacity-30 hover:opacity-80 transition-opacity"
                     >
                       Save
                     </button>
@@ -942,9 +942,9 @@ export default function Home() {
                     return (
                       <div className="flex items-start justify-between gap-3">
                         {vision ? (
-                          <p className="text-sm text-foreground leading-snug flex-1">{vision.name}</p>
+                          <p className="text-base text-foreground leading-snug flex-1">{vision.name}</p>
                         ) : (
-                          <p className="text-sm text-muted-foreground flex-1">No vision set yet.</p>
+                          <p className="text-base text-muted-foreground flex-1">No vision set yet.</p>
                         )}
                         <button
                           onClick={() => {
@@ -970,7 +970,7 @@ export default function Home() {
                 </p>
 
                 {settingsTiers.filter((t) => t.tier_type === "operational").length === 0 && (
-                  <p className="text-sm text-muted-foreground">No categories yet.</p>
+                  <p className="text-base text-muted-foreground">No categories yet.</p>
                 )}
 
                 <div className="flex flex-col gap-2">
@@ -981,7 +981,7 @@ export default function Home() {
                         key={tier.id}
                         className="flex items-center justify-between gap-3 py-2.5 border-b border-border/50"
                       >
-                        <span className="text-sm text-foreground leading-snug flex-1">{tier.name}</span>
+                        <span className="text-base text-foreground leading-snug flex-1">{tier.name}</span>
                         <button
                           onClick={() => removeCategory(tier.id)}
                           className="text-xs text-muted-foreground/40 hover:text-destructive transition-colors flex-shrink-0"
@@ -1000,12 +1000,12 @@ export default function Home() {
                     onChange={(e) => setNewCategoryName(e.target.value)}
                     onKeyDown={(e) => { if (e.key === "Enter") addCategory(); }}
                     placeholder="Add a category…"
-                    className="flex-1 px-3 py-2.5 rounded-lg border border-border bg-transparent text-sm focus:outline-none focus:border-foreground/50 transition-colors"
+                    className="flex-1 px-3 py-2.5 rounded-lg border border-border bg-transparent text-base focus:outline-none focus:border-foreground/50 transition-colors"
                   />
                   <button
                     onClick={addCategory}
                     disabled={!newCategoryName.trim()}
-                    className="px-4 py-2.5 rounded-lg bg-foreground text-background text-sm font-medium disabled:opacity-30 hover:opacity-80 transition-opacity"
+                    className="px-4 py-2.5 rounded-lg bg-foreground text-background text-base font-medium disabled:opacity-30 hover:opacity-80 transition-opacity"
                   >
                     Add
                   </button>
@@ -1078,7 +1078,7 @@ function GTDTaskItem({
       </button>
 
       <span
-        className={`text-sm leading-snug flex-1 min-w-0 ${
+        className={`text-base leading-snug flex-1 min-w-0 ${
           task.completed ? "line-through text-muted-foreground" : "text-foreground"
         }`}
       >
@@ -1087,7 +1087,7 @@ function GTDTaskItem({
 
       {dueLabel && !task.completed && (
         <span
-          className={`text-xs flex-shrink-0 ${
+          className={`text-sm flex-shrink-0 ${
             isOverdue ? "text-destructive" : "text-muted-foreground"
           }`}
         >
@@ -1122,8 +1122,8 @@ function ParkedItem({ task }: { task: Task }) {
 
   return (
     <div className="flex flex-col gap-0.5 py-2.5 border-l-2 border-amber-300/50 pl-3">
-      <span className="text-xs font-medium text-muted-foreground">{task.title}</span>
-      <span className="text-xs text-amber-600/60">{label}</span>
+      <span className="text-sm font-medium text-muted-foreground">{task.title}</span>
+      <span className="text-sm text-amber-600/60">{label}</span>
     </div>
   );
 }
@@ -1139,10 +1139,10 @@ function FlagItem({ flag }: { flag: Flag }) {
 
   return (
     <div className="flex flex-col gap-0.5 py-2.5 border-l-2 border-border pl-3">
-      <span className={`text-xs font-medium ${colors[flag.flag_type] ?? "text-muted-foreground"}`}>
+      <span className={`text-sm font-medium ${colors[flag.flag_type] ?? "text-muted-foreground"}`}>
         {flag.title}
       </span>
-      <span className="text-xs text-muted-foreground">{flag.note}</span>
+      <span className="text-sm text-muted-foreground">{flag.note}</span>
     </div>
   );
 }
@@ -1175,17 +1175,17 @@ function InitiativeSheet({
         {initiative && (
           <div className="flex flex-col gap-8 max-w-lg mx-auto">
             <div className="flex items-start justify-between gap-4">
-              <h2 className="text-2xl font-light leading-snug flex-1">{initiative.title}</h2>
+              <h2 className="text-3xl font-light leading-snug flex-1">{initiative.title}</h2>
               <button
                 onClick={() => onOpenChange(false)}
-                className="text-xs text-muted-foreground hover:text-foreground transition-colors flex-shrink-0 mt-1"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors flex-shrink-0 mt-1"
               >
                 ← back
               </button>
             </div>
 
             {initiative.reasoning && (
-              <p className="text-sm text-muted-foreground leading-relaxed">{initiative.reasoning}</p>
+              <p className="text-base text-muted-foreground leading-relaxed">{initiative.reasoning}</p>
             )}
 
             <Separator />
@@ -1209,7 +1209,7 @@ function InitiativeSheet({
               )}
 
               {!loading && subtasks.length === 0 && (
-                <p className="text-sm text-muted-foreground py-2">
+                <p className="text-base text-muted-foreground py-2">
                   No subtasks yet. Break this down in Teamwork.
                 </p>
               )}
@@ -1228,7 +1228,7 @@ function InitiativeSheet({
                     }`}
                   />
                   <span
-                    className={`text-sm leading-snug ${
+                    className={`text-base leading-snug ${
                       subtask.completed
                         ? "line-through text-muted-foreground"
                         : "text-foreground"
@@ -1246,7 +1246,7 @@ function InitiativeSheet({
                   onComplete(initiative);
                   onOpenChange(false);
                 }}
-                className="self-start px-6 py-3 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-80 transition-opacity"
+                className="self-start px-6 py-3 rounded-full bg-foreground text-background text-base font-medium hover:opacity-80 transition-opacity"
               >
                 Mark complete
               </button>
@@ -1313,18 +1313,18 @@ function BlockSheet({
           <div className="flex flex-col gap-6 max-w-lg mx-auto">
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1.5">Parking</p>
-              <p className="text-sm font-medium leading-snug">{task.title}</p>
+              <p className="text-base font-medium leading-snug">{task.title}</p>
             </div>
 
             <div className="flex flex-col gap-2">
-              <p className="text-xs text-muted-foreground">What&apos;s in the way?</p>
+              <p className="text-sm text-muted-foreground">What&apos;s in the way?</p>
               <div className="flex flex-col gap-2">
                 {BLOCK_OPTIONS.map((opt) => (
                   <motion.button
                     key={opt.key}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setBlockType(opt.key)}
-                    className={`px-4 py-3 rounded-xl border text-sm text-left transition-all ${
+                    className={`px-4 py-3 rounded-xl border text-base text-left transition-all ${
                       blockType === opt.key
                         ? "border-foreground bg-foreground text-background"
                         : "border-border hover:border-foreground/30 hover:bg-accent"
@@ -1338,41 +1338,41 @@ function BlockSheet({
 
             {(blockType === "waiting_client" || blockType === "waiting_person") && (
               <div className="flex flex-col gap-2">
-                <label className="text-xs text-muted-foreground">Who?</label>
+                <label className="text-sm text-muted-foreground">Who?</label>
                 <input
                   type="text"
                   value={waitingOn}
                   onChange={(e) => setWaitingOn(e.target.value)}
                   placeholder="Name or company"
                   autoFocus
-                  className="px-3 py-2.5 rounded-lg border border-border bg-transparent text-sm focus:outline-none focus:border-foreground/50 transition-colors"
+                  className="px-3 py-2.5 rounded-lg border border-border bg-transparent text-base focus:outline-none focus:border-foreground/50 transition-colors"
                 />
               </div>
             )}
 
             <div className="flex flex-col gap-2">
-              <label className="text-xs text-muted-foreground">Follow-up date (optional)</label>
+              <label className="text-sm text-muted-foreground">Follow-up date (optional)</label>
               <input
                 type="date"
                 value={followUpDate}
                 onChange={(e) => setFollowUpDate(e.target.value)}
-                className="px-3 py-2.5 rounded-lg border border-border bg-transparent text-sm focus:outline-none focus:border-foreground/50 transition-colors"
+                className="px-3 py-2.5 rounded-lg border border-border bg-transparent text-base focus:outline-none focus:border-foreground/50 transition-colors"
               />
             </div>
 
-            {error && <p className="text-xs text-destructive">{error}</p>}
+            {error && <p className="text-sm text-destructive">{error}</p>}
 
             <div className="flex gap-3">
               <button
                 onClick={() => onOpenChange(false)}
-                className="flex-1 py-3 rounded-full border border-border text-sm text-muted-foreground hover:border-foreground/30 transition-colors"
+                className="flex-1 py-3 rounded-full border border-border text-base text-muted-foreground hover:border-foreground/30 transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={!blockType || loading}
-                className="flex-1 py-3 rounded-full bg-foreground text-background text-sm font-medium disabled:opacity-40 hover:opacity-80 transition-opacity"
+                className="flex-1 py-3 rounded-full bg-foreground text-background text-base font-medium disabled:opacity-40 hover:opacity-80 transition-opacity"
               >
                 {loading ? "Parking…" : "Park it"}
               </button>
