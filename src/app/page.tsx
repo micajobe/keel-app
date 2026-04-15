@@ -389,7 +389,7 @@ export default function Home() {
                   </button>
                   <button
                     onClick={loadSettings}
-                    className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+                    className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                   >
                     Set your must-wins →
                   </button>
