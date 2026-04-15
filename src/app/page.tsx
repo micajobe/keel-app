@@ -431,22 +431,22 @@ export default function Home() {
                 >
                   Start your day
                 </button>
-                <div className="flex flex-col items-center gap-2">
+                <div className="flex flex-col items-center gap-3">
                   <button
                     onClick={openCapture}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-lg text-muted-foreground hover:text-foreground transition-colors"
                   >
                     Capture tasks →
                   </button>
                   <button
                     onClick={loadReflect}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-lg text-muted-foreground hover:text-foreground transition-colors"
                   >
                     Reflect on this week →
                   </button>
                   <button
                     onClick={loadSettings}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-lg text-muted-foreground hover:text-foreground transition-colors"
                   >
                     Set your must-wins →
                   </button>
