@@ -45,6 +45,26 @@ export async function POST(request: Request) {
   }
 }
 
+export async function PATCH(request: Request) {
+  try {
+    const { id, name, description } = await request.json() as { id: string; name: string; description?: string };
+    if (!id || !name?.trim()) {
+      return Response.json({ error: "id and name are required" }, { status: 400 });
+    }
+    const { data, error } = await supabaseAdmin
+      .from("strategic_tiers")
+      .update({ name: name.trim(), description: description ?? null })
+      .eq("id", id)
+      .select()
+      .single();
+    if (error) throw error;
+    return Response.json({ tier: data });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    return Response.json({ error: message }, { status: 500 });
+  }
+}
+
 export async function DELETE(request: Request) {
   try {
     const { id } = await request.json() as { id: string };

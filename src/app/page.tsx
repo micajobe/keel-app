@@ -131,6 +131,9 @@ export default function Home() {
   const [delta, setDelta] = useState<DeltaData | null>(null);
   const [settingsTiers, setSettingsTiers] = useState<TierRow[]>([]);
   const [newRockName, setNewRockName] = useState("");
+  const [visionEditing, setVisionEditing] = useState(false);
+  const [visionDraft, setVisionDraft] = useState("");
+  const [newCategoryName, setNewCategoryName] = useState("");
   const [captureInput, setCaptureInput] = useState("");
   const [capturedTasks, setCapturedTasks] = useState<{ id: string; content: string }[]>([]);
   const [captureLoading, setCaptureLoading] = useState(false);
@@ -318,6 +321,60 @@ export default function Home() {
   }
 
   async function removeRock(id: string) {
+    setSettingsTiers((prev) => prev.filter((t) => t.id !== id));
+    await fetch("/api/tiers", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+  }
+
+  async function saveVision() {
+    const name = visionDraft.trim();
+    if (!name) return;
+    const existing = settingsTiers.find((t) => t.tier_type === "vision");
+    if (existing) {
+      const res = await fetch("/api/tiers", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: existing.id, name }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setSettingsTiers((prev) =>
+          prev.map((t) => (t.id === existing.id ? (data.tier as TierRow) : t))
+        );
+      }
+    } else {
+      const res = await fetch("/api/tiers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tier_type: "vision", name }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setSettingsTiers((prev) => [...prev, data.tier as TierRow]);
+      }
+    }
+    setVisionEditing(false);
+  }
+
+  async function addCategory() {
+    const name = newCategoryName.trim();
+    if (!name) return;
+    setNewCategoryName("");
+    const res = await fetch("/api/tiers", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tier_type: "operational", name }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setSettingsTiers((prev) => [...prev, data.tier as TierRow]);
+    }
+  }
+
+  async function removeCategory(id: string) {
     setSettingsTiers((prev) => prev.filter((t) => t.id !== id));
     await fetch("/api/tiers", {
       method: "DELETE",
@@ -857,32 +914,101 @@ export default function Home() {
 
               <div className="flex flex-col gap-3">
                 <p className="text-xs text-muted-foreground uppercase tracking-widest">Vision</p>
-                {settingsTiers
-                  .filter((t) => t.tier_type === "vision")
-                  .map((tier) => (
-                    <div key={tier.id} className="flex flex-col gap-0.5">
-                      <p className="text-sm text-foreground leading-snug">{tier.name}</p>
-                      {tier.description && (
-                        <p className="text-xs text-muted-foreground leading-relaxed">{tier.description}</p>
-                      )}
-                    </div>
-                  ))}
+                {visionEditing ? (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={visionDraft}
+                      onChange={(e) => setVisionDraft(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") saveVision();
+                        if (e.key === "Escape") setVisionEditing(false);
+                      }}
+                      autoFocus
+                      placeholder="e.g. $30M digital revenue by 2030"
+                      className="flex-1 px-3 py-2.5 rounded-lg border border-border bg-transparent text-sm focus:outline-none focus:border-foreground/50 transition-colors"
+                    />
+                    <button
+                      onClick={saveVision}
+                      disabled={!visionDraft.trim()}
+                      className="px-4 py-2.5 rounded-lg bg-foreground text-background text-sm font-medium disabled:opacity-30 hover:opacity-80 transition-opacity"
+                    >
+                      Save
+                    </button>
+                  </div>
+                ) : (
+                  (() => {
+                    const vision = settingsTiers.find((t) => t.tier_type === "vision");
+                    return (
+                      <div className="flex items-start justify-between gap-3">
+                        {vision ? (
+                          <p className="text-sm text-foreground leading-snug flex-1">{vision.name}</p>
+                        ) : (
+                          <p className="text-sm text-muted-foreground flex-1">No vision set yet.</p>
+                        )}
+                        <button
+                          onClick={() => {
+                            const v = settingsTiers.find((t) => t.tier_type === "vision");
+                            setVisionDraft(v?.name ?? "");
+                            setVisionEditing(true);
+                          }}
+                          className="text-xs text-muted-foreground/40 hover:text-foreground transition-colors flex-shrink-0"
+                        >
+                          {vision ? "edit" : "add"}
+                        </button>
+                      </div>
+                    );
+                  })()
+                )}
               </div>
 
               <Separator />
 
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-4">
                 <p className="text-xs text-muted-foreground uppercase tracking-widest">
                   Operational Categories
                 </p>
-                <div className="flex flex-wrap gap-2">
+
+                {settingsTiers.filter((t) => t.tier_type === "operational").length === 0 && (
+                  <p className="text-sm text-muted-foreground">No categories yet.</p>
+                )}
+
+                <div className="flex flex-col gap-2">
                   {settingsTiers
                     .filter((t) => t.tier_type === "operational")
                     .map((tier) => (
-                      <Badge key={tier.id} variant="secondary" className="font-normal">
-                        {tier.name}
-                      </Badge>
+                      <div
+                        key={tier.id}
+                        className="flex items-center justify-between gap-3 py-2.5 border-b border-border/50"
+                      >
+                        <span className="text-sm text-foreground leading-snug flex-1">{tier.name}</span>
+                        <button
+                          onClick={() => removeCategory(tier.id)}
+                          className="text-xs text-muted-foreground/40 hover:text-destructive transition-colors flex-shrink-0"
+                          aria-label="Remove category"
+                        >
+                          remove
+                        </button>
+                      </div>
                     ))}
+                </div>
+
+                <div className="flex gap-2 mt-1">
+                  <input
+                    type="text"
+                    value={newCategoryName}
+                    onChange={(e) => setNewCategoryName(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter") addCategory(); }}
+                    placeholder="Add a category…"
+                    className="flex-1 px-3 py-2.5 rounded-lg border border-border bg-transparent text-sm focus:outline-none focus:border-foreground/50 transition-colors"
+                  />
+                  <button
+                    onClick={addCategory}
+                    disabled={!newCategoryName.trim()}
+                    className="px-4 py-2.5 rounded-lg bg-foreground text-background text-sm font-medium disabled:opacity-30 hover:opacity-80 transition-opacity"
+                  >
+                    Add
+                  </button>
                 </div>
               </div>
             </motion.div>
