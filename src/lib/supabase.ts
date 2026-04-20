@@ -55,6 +55,12 @@ export type PriorityStateRow = {
   task_title: string;
   sort_order: number;
   is_visible: boolean;
+  reasoning: string | null;
+  task_type: string | null;
+  strategic_tier: string | null;
+  estimated_duration: string | null;
+  day_briefing: string | null;
+  last_session_id: string | null;
   updated_at: string;
 };
 
@@ -102,6 +108,14 @@ export async function upsertPriorityState(
   const { error } = await supabaseAdmin
     .from("priority_state")
     .upsert(tasks, { onConflict: "teamwork_task_id" });
+  if (error) throw error;
+}
+
+export async function clearPriorityState(): Promise<void> {
+  const { error } = await supabaseAdmin
+    .from("priority_state")
+    .update({ is_visible: false })
+    .eq("is_visible", true);
   if (error) throw error;
 }
 

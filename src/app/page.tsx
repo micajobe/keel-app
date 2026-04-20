@@ -5,13 +5,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { Menu, X } from "lucide-react";
+import Image from "next/image";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 type BlockType = "waiting_client" | "waiting_person" | "external";
 type Mode = "deep_work" | "get_things_done";
 type GtdSort = "speed" | "age";
-type View = "home" | "mode" | "loading" | "session" | "reflect" | "settings" | "capture";
+type View = "home" | "loading" | "session" | "reflect" | "settings" | "capture";
 
 type Task = {
   id: string;
@@ -133,7 +135,6 @@ export default function Home() {
   const [newRockName, setNewRockName] = useState("");
   const [visionEditing, setVisionEditing] = useState(false);
   const [visionDraft, setVisionDraft] = useState("");
-  const [newCategoryName, setNewCategoryName] = useState("");
   const [captureInput, setCaptureInput] = useState("");
   const [capturedTasks, setCapturedTasks] = useState<{ id: string; content: string }[]>([]);
   const [captureLoading, setCaptureLoading] = useState(false);
@@ -141,6 +142,7 @@ export default function Home() {
   const [selectedInitiative, setSelectedInitiative] = useState<Task | null>(null);
   const [subtasks, setSubtasks] = useState<Subtask[]>([]);
   const [subtasksLoading, setSubtasksLoading] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     fetch("/api/delta")
@@ -153,11 +155,11 @@ export default function Home() {
       .catch(() => {});
   }, []);
 
-  async function startSession(selectedMode: Mode) {
+  async function startSession(selectedMode: Mode, refresh = false) {
     setMode(selectedMode);
     setLoadingText(
       selectedMode === "deep_work"
-        ? "Ranking your initiatives…"
+        ? refresh ? "Re-ranking your initiatives…" : "Loading priorities…"
         : "Loading your tasks…"
     );
     setView("loading");
@@ -167,7 +169,7 @@ export default function Home() {
       const res = await fetch("/api/session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode: selectedMode }),
+        body: JSON.stringify({ mode: selectedMode, refresh }),
       });
 
       if (!res.ok) {
@@ -359,29 +361,6 @@ export default function Home() {
     setVisionEditing(false);
   }
 
-  async function addCategory() {
-    const name = newCategoryName.trim();
-    if (!name) return;
-    setNewCategoryName("");
-    const res = await fetch("/api/tiers", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ tier_type: "operational", name }),
-    });
-    if (res.ok) {
-      const data = await res.json();
-      setSettingsTiers((prev) => [...prev, data.tier as TierRow]);
-    }
-  }
-
-  async function removeCategory(id: string) {
-    setSettingsTiers((prev) => prev.filter((t) => t.id !== id));
-    await fetch("/api/tiers", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id }),
-    });
-  }
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long", month: "long", day: "numeric",
@@ -410,86 +389,73 @@ export default function Home() {
             <motion.div
               key="home"
               {...fadeUp}
-              className="flex flex-col flex-1 items-center justify-center px-6 gap-10"
+              className="flex flex-col flex-1 max-w-lg mx-auto w-full px-6 pt-6 pb-10 gap-6"
             >
-              <div className="flex flex-col items-center gap-2 text-center">
-                <h1 className="text-6xl font-bold tracking-tight" style={{ fontFamily: "var(--font-playfair)" }}>Keel</h1>
-                <p className="text-xl text-muted-foreground">{today}</p>
+              {/* Top bar */}
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-amber-700">{today}</p>
+                <button
+                  onClick={() => setMenuOpen(true)}
+                  className="p-2 -mr-2 text-foreground/70 hover:text-foreground transition-colors"
+                  aria-label="Menu"
+                >
+                  <Menu size={22} strokeWidth={1.8} />
+                </button>
               </div>
+
+              {/* Logo */}
+              <div className="flex justify-center pt-4 pb-2">
+                <Image
+                  src="/keel-logo.svg"
+                  alt="Keel"
+                  width={163}
+                  height={51}
+                  priority
+                />
+              </div>
+
+              {/* Heading */}
+              <h2 className="text-3xl font-semibold tracking-tight text-center">
+                Start your day
+              </h2>
 
               {error && (
-                <p className="text-sm text-destructive text-center max-w-xs">{error}</p>
+                <p className="text-sm text-destructive text-center">{error}</p>
               )}
 
-              <div className="flex flex-col items-center gap-4">
-                {deltaNudge && (
-                  <p className="text-sm text-amber-600/80 text-center">{deltaNudge}</p>
-                )}
-                <button
-                  onClick={() => setView("mode")}
-                  className="px-10 py-4 rounded-full bg-foreground text-background text-xl font-medium hover:opacity-80 transition-opacity"
-                >
-                  Start your day
-                </button>
-                <div className="flex flex-col items-center gap-3">
-                  <button
-                    onClick={openCapture}
-                    className="text-lg text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    Capture tasks →
-                  </button>
-                  <button
-                    onClick={loadReflect}
-                    className="text-lg text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    Reflect on this week →
-                  </button>
-                  <button
-                    onClick={loadSettings}
-                    className="text-lg text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    Set your must-wins →
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {/* ── Mode selection ─────────────────────────────────────────────────── */}
-          {view === "mode" && (
-            <motion.div
-              key="mode"
-              {...fadeUp}
-              className="flex flex-col flex-1 px-6 pt-16 pb-10 gap-8 max-w-lg mx-auto w-full"
-            >
-              <div>
-                <button
-                  onClick={() => setView("home")}
-                  className="text-base text-muted-foreground hover:text-foreground transition-colors mb-6"
-                >
-                  ← back
-                </button>
-                <h2 className="text-3xl font-semibold tracking-tight">
-                  What kind of day is it?
-                </h2>
-                <p className="text-xl text-muted-foreground mt-1">
-                  Keel will shape your view around your answer.
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-3">
+              {/* Mode cards */}
+              <div className="flex flex-col gap-4">
                 {MODES.map((m) => (
                   <motion.button
                     key={m.key}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => startSession(m.key)}
-                    className="flex flex-col items-start gap-1 px-5 py-5 rounded-xl border border-border bg-card text-left hover:border-foreground/30 hover:bg-accent transition-all"
+                    className="relative w-full overflow-hidden rounded-2xl text-left group"
                   >
-                    <span className="text-xl font-medium">{m.label}</span>
-                    <span className="text-base text-muted-foreground">{m.sub}</span>
+                    <Image
+                      src={`/cards/${m.key === "deep_work" ? "deep-work" : "get-things-done"}.png`}
+                      alt=""
+                      width={680}
+                      height={479}
+                      className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                    <div className="absolute inset-0 flex flex-col justify-end p-5">
+                      <span className="text-[22px] font-medium text-white">
+                        {m.label}
+                      </span>
+                      <span className="text-base text-white/70 mt-0.5">
+                        {m.sub}
+                      </span>
+                    </div>
                   </motion.button>
                 ))}
               </div>
+
+              {/* Stats footer */}
+              {deltaNudge && (
+                <p className="text-sm text-amber-600/80 text-center pt-2">{deltaNudge}</p>
+              )}
             </motion.div>
           )}
 
@@ -525,12 +491,20 @@ export default function Home() {
                 <p className="text-xs text-muted-foreground uppercase tracking-widest">
                   Deep Work
                 </p>
-                <button
-                  onClick={() => setView("home")}
-                  className="text-base text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  new session
-                </button>
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => startSession("deep_work", true)}
+                    className="text-base text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    refresh
+                  </button>
+                  <button
+                    onClick={() => setView("home")}
+                    className="text-base text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    home
+                  </button>
+                </div>
               </div>
 
               {briefing && (
@@ -833,7 +807,7 @@ export default function Home() {
 
               {capturedTasks.length > 0 && (
                 <button
-                  onClick={() => setView("mode")}
+                  onClick={() => setView("home")}
                   className="self-start px-6 py-3 rounded-full bg-foreground text-background text-base font-medium hover:opacity-80 transition-opacity"
                 >
                   Start your day →
@@ -962,55 +936,6 @@ export default function Home() {
                 )}
               </div>
 
-              <Separator />
-
-              <div className="flex flex-col gap-4">
-                <p className="text-xs text-muted-foreground uppercase tracking-widest">
-                  Operational Categories
-                </p>
-
-                {settingsTiers.filter((t) => t.tier_type === "operational").length === 0 && (
-                  <p className="text-base text-muted-foreground">No categories yet.</p>
-                )}
-
-                <div className="flex flex-col gap-2">
-                  {settingsTiers
-                    .filter((t) => t.tier_type === "operational")
-                    .map((tier) => (
-                      <div
-                        key={tier.id}
-                        className="flex items-center justify-between gap-3 py-2.5 border-b border-border/50"
-                      >
-                        <span className="text-base text-foreground leading-snug flex-1">{tier.name}</span>
-                        <button
-                          onClick={() => removeCategory(tier.id)}
-                          className="text-xs text-muted-foreground/40 hover:text-destructive transition-colors flex-shrink-0"
-                          aria-label="Remove category"
-                        >
-                          remove
-                        </button>
-                      </div>
-                    ))}
-                </div>
-
-                <div className="flex gap-2 mt-1">
-                  <input
-                    type="text"
-                    value={newCategoryName}
-                    onChange={(e) => setNewCategoryName(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === "Enter") addCategory(); }}
-                    placeholder="Add a category…"
-                    className="flex-1 px-3 py-2.5 rounded-lg border border-border bg-transparent text-base focus:outline-none focus:border-foreground/50 transition-colors"
-                  />
-                  <button
-                    onClick={addCategory}
-                    disabled={!newCategoryName.trim()}
-                    className="px-4 py-2.5 rounded-lg bg-foreground text-background text-base font-medium disabled:opacity-30 hover:opacity-80 transition-opacity"
-                  >
-                    Add
-                  </button>
-                </div>
-              </div>
             </motion.div>
           )}
 
@@ -1034,6 +959,42 @@ export default function Home() {
         onOpenChange={(open) => { if (!open) setSelectedInitiative(null); }}
         onComplete={(task) => completeTask(task.id, task.title)}
       />
+
+      {/* Menu sheet */}
+      <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+        <SheetContent side="right" className="px-6 pt-8 pb-10 w-72" showCloseButton={false}>
+          <SheetTitle className="sr-only">Menu</SheetTitle>
+          <div className="flex flex-col gap-1">
+            <div className="flex justify-end mb-6">
+              <button
+                onClick={() => setMenuOpen(false)}
+                className="p-2 -mr-2 text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Close menu"
+              >
+                <X size={20} strokeWidth={1.8} />
+              </button>
+            </div>
+            <button
+              onClick={() => { setMenuOpen(false); openCapture(); }}
+              className="text-lg text-left py-3 text-foreground hover:text-foreground/70 transition-colors"
+            >
+              Capture tasks
+            </button>
+            <button
+              onClick={() => { setMenuOpen(false); loadReflect(); }}
+              className="text-lg text-left py-3 text-foreground hover:text-foreground/70 transition-colors"
+            >
+              Reflect on this week
+            </button>
+            <button
+              onClick={() => { setMenuOpen(false); loadSettings(); }}
+              className="text-lg text-left py-3 text-foreground hover:text-foreground/70 transition-colors"
+            >
+              Set your must-wins
+            </button>
+          </div>
+        </SheetContent>
+      </Sheet>
     </>
   );
 }

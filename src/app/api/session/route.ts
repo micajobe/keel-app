@@ -2,6 +2,8 @@ import Anthropic from "@anthropic-ai/sdk";
 import { getProjectTasks, getInitiativeTasks, type TWTask } from "@/lib/teamwork";
 import {
   getStrategicTiers,
+  getPriorityState,
+  clearPriorityState,
   createSession,
   saveSessionTasks,
   upsertPriorityState,
@@ -28,14 +30,41 @@ function buildTaskList(tasks: TWTask[]): string {
     .map((t, i) => {
       const due = formatDueDate(t["due-date"]);
       const tags = t.tags?.map((tag) => tag.name).join(", ") || "";
-      return `${i + 1}. [ID:${t.id}] "${t.content}" — ${due}${tags ? `, tags: ${tags}` : ""}`;
+      const list = t["todo-list-name"] ? ` [${t["todo-list-name"]}]` : "";
+      return `${i + 1}. [ID:${t.id}] "${t.content}"${list} — ${due}${tags ? `, tags: ${tags}` : ""}`;
     })
     .join("\n");
 }
 
 // ── Deep Work ─────────────────────────────────────────────────────────────────
 
-async function handleDeepWork() {
+async function handleDeepWork(refresh: boolean) {
+  // ── Check for cached priority state ──────────────────────────────────────
+  if (!refresh) {
+    const cached = await getPriorityState();
+    if (cached.length > 0) {
+      const briefing = cached[0].day_briefing ?? "";
+      return Response.json({
+        sessionId: cached[0].last_session_id,
+        dayBriefing: briefing,
+        cached: true,
+        tasks: cached.map((row) => ({
+          id: row.teamwork_task_id,
+          title: row.task_title,
+          priority_rank: row.sort_order,
+          strategic_tier: row.strategic_tier ?? "",
+          task_type: row.task_type ?? "",
+          reasoning: row.reasoning ?? "",
+          estimated_duration: row.estimated_duration ?? "",
+        })),
+        flags: [],
+      });
+    }
+  }
+
+  // ── Fresh LLM ranking ────────────────────────────────────────────────────
+  if (refresh) await clearPriorityState();
+
   const [initiatives, tiers] = await Promise.all([
     getInitiativeTasks(),
     getStrategicTiers(),
@@ -47,7 +76,6 @@ async function handleDeepWork() {
 
   const vision = tiers.filter((t) => t.tier_type === "vision");
   const annual = tiers.filter((t) => t.tier_type === "annual");
-  const operational = tiers.filter((t) => t.tier_type === "operational");
 
   const strategicContext = `## Strategic Context
 
@@ -56,9 +84,6 @@ ${vision.map((v) => `- ${v.name}${v.description ? `: ${v.description}` : ""}`).j
 
 ### Annual Must-Wins
 ${annual.length > 0 ? annual.map((a) => `- ${a.name}${a.description ? `: ${a.description}` : ""}`).join("\n") : "- Not configured yet"}
-
-### Operational Categories
-${operational.map((o) => `- ${o.name}`).join("\n")}
 
 ## Your Role
 You are Keel — a strategic prioritization advisor. Rank these initiatives by what deserves focus today given strategic importance, urgency, and momentum. Be direct and concise.`;
@@ -76,7 +101,7 @@ Return a JSON object:
   ]
 }
 
-Return 3–5 tasks, ranked by strategic priority. task_type: sales/business_development/relationships/culture/strategic/admin/other. estimated_duration: "< 30 min"/"30-60 min"/"1-2 hours"/"2+ hours". Respond with ONLY valid JSON.`;
+Return 3–5 tasks, ranked by strategic priority. task_type: infer a short category from the task itself (e.g. "sales", "ops", "product", "relationships", "strategy"). estimated_duration: "< 30 min"/"30-60 min"/"1-2 hours"/"2+ hours". Respond with ONLY valid JSON.`;
 
   const message = await client.messages.create({
     model: "claude-sonnet-4-6",
@@ -109,6 +134,9 @@ Return 3–5 tasks, ranked by strategic priority. task_type: sales/business_deve
     await upsertPriorityState(parsed.tasks.map((t) => ({
       teamwork_task_id: t.id, task_title: t.title, sort_order: t.priority_rank,
       is_visible: true, last_session_id: session.id,
+      reasoning: t.reasoning, task_type: t.task_type,
+      strategic_tier: t.strategic_tier, estimated_duration: t.estimated_duration,
+      day_briefing: parsed.day_briefing,
     })));
     Promise.all(parsed.tasks.map((t) =>
       upsertTaskClassification({
@@ -125,6 +153,7 @@ Return 3–5 tasks, ranked by strategic priority. task_type: sales/business_deve
   return Response.json({
     sessionId: session.id,
     dayBriefing: parsed.day_briefing,
+    cached: false,
     tasks: parsed.tasks,
     flags: [],
   });
@@ -167,9 +196,12 @@ async function handleGetThingsDone() {
 
 export async function POST(request: Request) {
   try {
-    const { mode } = (await request.json()) as { mode: "deep_work" | "get_things_done" };
+    const { mode, refresh } = (await request.json()) as {
+      mode: "deep_work" | "get_things_done";
+      refresh?: boolean;
+    };
 
-    if (mode === "deep_work") return handleDeepWork();
+    if (mode === "deep_work") return handleDeepWork(!!refresh);
     if (mode === "get_things_done") return handleGetThingsDone();
 
     return Response.json({ error: "Invalid mode" }, { status: 400 });
